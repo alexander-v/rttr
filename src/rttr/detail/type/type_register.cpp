@@ -182,6 +182,18 @@ bool type_register::unregister_converter(const type_converter_base* converter)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+bool type_register::register_hash_op(const type_hash_op_base* hash_op)
+{
+    return type_register_private::get_instance().register_hash_op(hash_op);
+}
+
+bool type_register::unregister_hash_op(const type_hash_op_base* hash_op)
+{
+    return type_register_private::get_instance().unregister_hash_op(hash_op);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 bool type_register::register_equal_comparator(type_comparator_base* comparator)
 {
      return type_register_private::get_instance().register_equal_comparator(comparator);
@@ -1000,6 +1012,20 @@ const type_comparator_base* type_register_private::get_equal_comparator(const ty
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+const type_hash_op_base* type_register_private::get_hash_op(const type& t)
+{
+    using vec_value_type = data_container<const type_hash_op_base*>;
+    const auto id = t.get_id();
+    auto itr = std::lower_bound(m_type_hash_op_list.cbegin(), m_type_hash_op_list.cend(), id,
+                                vec_value_type::order_by_id());
+    if (itr != m_type_hash_op_list.cend() && itr->m_id == id)
+        return itr->m_data;
+    else
+        return nullptr;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 const type_comparator_base* type_register_private::get_less_than_comparator(const type& t)
 {
     return get_type_comparator_impl(t, m_type_less_than_cmp_list);
@@ -1020,6 +1046,29 @@ type_register_private::get_type_comparator_impl(const type& t,
     else
         return nullptr;
  }
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+bool type_register_private::register_hash_op(const type_hash_op_base* hash_op)
+{
+    const auto t = hash_op->hash_type;
+
+    if (!t.is_valid())
+        return false;
+
+    using vec_value_type = data_container<const type_hash_op_base*>;
+    m_type_hash_op_list.push_back({t.get_id(), hash_op});
+    std::stable_sort(m_type_hash_op_list.begin(), m_type_hash_op_list.end(),
+                     vec_value_type::order_by_id());
+    return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+bool type_register_private::unregister_hash_op(const type_hash_op_base* hash_op)
+{
+    return remove_item(m_type_hash_op_list, hash_op);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 

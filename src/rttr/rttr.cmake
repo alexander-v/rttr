@@ -83,6 +83,8 @@ set(HEADER_FILES access_levels.h
                  detail/enumeration/enumeration_wrapper_base.h
                  detail/enumeration/enum_data.h
                  detail/filter/filter_item_funcs.h
+                 detail/hash/hash.h
+                 detail/hash/hash.cpp
                  detail/impl/argument_impl.h
                  detail/impl/array_range_impl.h
                  detail/impl/associative_mapper_impl.h

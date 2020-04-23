@@ -501,6 +501,13 @@ const detail::type_comparator_base* type::get_equal_comparator() const RTTR_NOEX
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+const detail::type_hash_op_base* type::get_hash_op() const RTTR_NOEXCEPT
+{
+    return detail::type_register_private::get_instance().get_hash_op(*this);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 const detail::type_comparator_base* type::get_less_than_comparator() const RTTR_NOEXCEPT
 {
     return detail::type_register_private::get_instance().get_less_than_comparator(*this);

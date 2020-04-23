@@ -122,6 +122,16 @@ variant& variant::operator=(variant&& other)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+size_t variant::get_hash(bool& ok) const
+{
+    size_t result;
+    ok = false;
+    m_policy(detail::variant_policy_operation::GET_HASH, m_data, std::tie(*this, result, ok));
+    return result;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 bool variant::compare_equal(const variant& other, bool& ok) const
 {
     ok = false;

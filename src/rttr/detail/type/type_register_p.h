@@ -110,6 +110,9 @@ public:
     bool register_converter(const type_converter_base* converter);
     bool unregister_converter(const type_converter_base* converter);
 
+    bool register_hash_op(const type_hash_op_base* hash_op);
+    bool unregister_hash_op(const type_hash_op_base* hash_op);
+    
     bool register_equal_comparator(const type_comparator_base* comparator);
     bool unregister_equal_comparator(const type_comparator_base* converter);
 
@@ -119,6 +122,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////
 
     const type_converter_base* get_converter(const type& source_type, const type& target_type);
+    const type_hash_op_base* get_hash_op(const type& t);
     const type_comparator_base* get_equal_comparator(const type& t);
     const type_comparator_base* get_less_than_comparator(const type& t);
 
@@ -224,6 +228,7 @@ private:
     std::vector<::rttr::method>                                 m_global_methods;
 
     std::vector<data_container<const type_converter_base*>>     m_type_converter_list;
+    std::vector<data_container<const type_hash_op_base*>>       m_type_hash_op_list;
     std::vector<data_container<const type_comparator_base*>>    m_type_equal_cmp_list;
     std::vector<data_container<const type_comparator_base*>>    m_type_less_than_cmp_list;
 

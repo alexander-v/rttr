@@ -84,6 +84,33 @@ struct type_less_than_comparator : type_comparator_base
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+struct type_hash_op_base
+{
+    using hash_op_func = size_t (*)(const void* value);
+
+    type_hash_op_base(hash_op_func hash = [](const void*) -> size_t { return 0; }, type t = get_invalid_type())
+        : hash(hash), hash_type(t)
+    {
+    }
+
+    hash_op_func    hash;
+    type            hash_type;
+};
+
+template<typename T>
+struct type_hash_op : type_hash_op_base
+{
+    type_hash_op() : type_hash_op_base(hash, type::get<T>()) {}
+
+    static size_t hash(const void* value)
+    {
+        std::hash<T> hasher;
+        return hasher(*static_cast<const T*>(value));
+    }
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 } // end namespace detail
 } // end namespace rttr
 

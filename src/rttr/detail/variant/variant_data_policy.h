@@ -137,7 +137,8 @@ enum class variant_policy_operation : uint8_t
     IS_NULLPTR,
     CONVERT,
     COMPARE_EQUAL,
-    COMPARE_LESS
+    COMPARE_LESS,
+    GET_HASH
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -301,6 +302,20 @@ struct variant_data_base_policy
             {
                 return is_nullptr(Tp::get_value(src_data));
             }
+            case variant_policy_operation::GET_HASH:
+            {
+                const auto& param = arg.get_value<std::tuple<const variant&, size_t&, bool&>>();
+
+                const variant& value  = std::get<0>(param);
+                size_t&        hash   = std::get<1>(param);
+                bool&          ok     = std::get<2>(param);
+
+                const type value_type = type::get<T>();
+
+                hash = get_hash(value.get_ptr(), value_type, ok);
+
+                return false;
+             }
             case variant_policy_operation::COMPARE_EQUAL:
             {
                 const auto& param   = arg.get_value<std::tuple<const variant&, const variant&, bool&>>();
@@ -611,6 +626,7 @@ struct RTTR_API variant_data_policy_empty
             case variant_policy_operation::SWAP:
             case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
             case variant_policy_operation::CREATE_WRAPPED_VALUE:
+            case variant_policy_operation::GET_HASH:
             {
                 break;
             }
@@ -718,6 +734,7 @@ struct RTTR_API variant_data_policy_void
             case variant_policy_operation::CLONE:
             case variant_policy_operation::SWAP:
             case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
+            case variant_policy_operation::GET_HASH:
             {
                 break;
             }
@@ -930,6 +947,10 @@ struct RTTR_API variant_data_policy_nullptr_t
                 return true;
             }
             case variant_policy_operation::CONVERT:
+            {
+                return false;
+            }
+            case variant_policy_operation::GET_HASH:
             {
                 return false;
             }

@@ -79,11 +79,13 @@ template<typename T, typename Tp, typename Converter>
 struct variant_data_base_policy;
 
 struct type_comparator_base;
+struct type_hash_op_base;
 
 enum class type_of_visit : bool;
 
 RTTR_API bool compare_types_less_than(const void*, const void*, const type&, int&);
 RTTR_API bool compare_types_equal(const void*, const void*, const type&, bool&);
+RTTR_API size_t get_hash(const void*, const type&, bool&);
 
 template<typename T>
 RTTR_LOCAL RTTR_INLINE type get_type_from_instance(const T*) RTTR_NOEXCEPT;
@@ -1022,6 +1024,9 @@ class RTTR_API type
         template<typename T>
         static void register_wrapper_converter_for_base_classes();
 
+        template<typename T>
+        static void register_hash_op();
+
         /*!
          * \brief Register comparison operators for template type \p T.
          *        This requires a valid `operator==` and `operator<` for type \p T.
@@ -1153,6 +1158,8 @@ class RTTR_API type
          */
         const detail::type_comparator_base* get_equal_comparator() const RTTR_NOEXCEPT;
 
+        const detail::type_hash_op_base* get_hash_op() const RTTR_NOEXCEPT;
+    
         /*!
          * \brief When for the current type instance a less-than comparator function was registered,
          *        then this function returns a valid pointer to a `type_comparator_base` object.
@@ -1224,6 +1231,7 @@ class RTTR_API type
 
         friend RTTR_API bool detail::compare_types_less_than(const void*, const void*, const type&, int&);
         friend RTTR_API bool detail::compare_types_equal(const void*, const void*, const type&, bool&);
+        friend RTTR_API size_t detail::get_hash(const void*, const type&, bool&);
 
     private:
         detail::type_data* m_type_data;

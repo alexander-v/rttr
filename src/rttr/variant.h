@@ -249,6 +249,8 @@ class RTTR_API variant
          */
         variant& operator=(const variant& other);
 
+        size_t get_hash(bool& ok) const;
+
         /*!
          * \brief Compares this variant with \p other and returns `true` if they are equal; otherwise returns `false`.
          *

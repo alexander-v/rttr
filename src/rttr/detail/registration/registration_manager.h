@@ -124,6 +124,12 @@ class RTTR_LOCAL registration_manager
             if (type_register::register_converter(conv.get()))
                 m_type_converters.push_back(std::move(conv));
         }
+    
+        void add_hash_op(std::unique_ptr<type_hash_op_base> op)
+        {
+            if (type_register::register_hash_op(op.get()))
+                m_type_hash_ops.push_back(std::move(op));
+        }
 
         void add_equal_cmp(std::unique_ptr<type_comparator_base> cmp)
         {
@@ -156,6 +162,8 @@ class RTTR_LOCAL registration_manager
 
             for (auto& item : m_type_converters)
                 type_register::unregister_converter(item.get());
+            for (auto& item : m_type_hash_ops)
+                type_register::unregister_hash_op(item.get());
             for (auto& item : m_type_equal_cmps)
                 type_register::unregister_equal_comparator(item.get());
             for (auto& item : m_type_less_than_cmps)
@@ -175,6 +183,7 @@ class RTTR_LOCAL registration_manager
             m_global_methods.clear();
             m_enumerations.clear();
             m_type_converters.clear();
+            m_type_hash_ops.clear();
             m_type_equal_cmps.clear();
             m_type_less_than_cmps.clear();
 
@@ -202,6 +211,7 @@ class RTTR_LOCAL registration_manager
         std::vector<std::unique_ptr<enumeration_wrapper_base>>  m_enumerations;
 
         std::vector<std::unique_ptr<type_converter_base>>       m_type_converters;
+        std::vector<std::unique_ptr<type_hash_op_base>>         m_type_hash_ops;
         std::vector<std::unique_ptr<type_comparator_base>>      m_type_equal_cmps;
         std::vector<std::unique_ptr<type_comparator_base>>      m_type_less_than_cmps;
 };

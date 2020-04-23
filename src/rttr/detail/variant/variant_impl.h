@@ -37,6 +37,20 @@
 #include "rttr/variant_associative_view.h"
 #include "rttr/variant_sequential_view.h"
 
+namespace std
+{
+template<>
+class hash<rttr::variant>
+{
+public:
+    size_t operator()(const rttr::variant &v) const
+    {
+        bool ok = false;
+        return v.get_hash(ok);
+    }
+};
+}
+
 namespace rttr
 {
 namespace detail

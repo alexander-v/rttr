@@ -56,6 +56,7 @@ class property_wrapper_base;
 
 struct type_converter_base;
 struct type_comparator_base;
+struct type_hash_op_base;
 struct base_class_info;
 struct derived_info;
 
@@ -109,6 +110,9 @@ public:
 
     static bool register_converter(const type_converter_base* converter);
     static bool unregister_converter(const type_converter_base* converter);
+
+    static bool register_hash_op(const type_hash_op_base* hash_op);
+    static bool unregister_hash_op(const type_hash_op_base* hash_op);
 
     static bool register_equal_comparator(type_comparator_base* comparator);
     static bool unregister_equal_comparator(const type_comparator_base* converter);

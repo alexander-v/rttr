@@ -446,6 +446,15 @@ void type::register_comparators()
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
+void type::register_hash_op()
+{
+//    static_assert(detail::has_less_than_operator<T>::value, "No less-than operator for given type found.");
+
+    detail::get_registration_manager().add_hash_op(::rttr::detail::make_unique<detail::type_hash_op<T>>());
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
 void type::register_equal_comparator()
 {
     static_assert(detail::has_equal_operator<T>::value, "No equal operator for given type found.");
